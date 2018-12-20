@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
-import { Grid, Header,Icon, Dropdown } from 'semantic-ui-react';
+import { Grid, Header,Icon, Dropdown,Image } from 'semantic-ui-react';
 import firebase from 'firebase';
-
 class UserPanel extends Component {
+    state = {
+        user:this.props.currentUser,
+
+    }
+    componentDidMount(){
+        this.setState({
+            user:this.props.currentUser
+        })
+    }
+
     dropdownOption = ()=>{
+        const {user} = this.state; 
         return ([
             {
                 key:"user",
-                text:<span>Signd in as <strong>User</strong></span>,
+                // text:<span>Signd in as <strong>{user && user.displayName}</strong></span>,
+                text:<span>Signd in as <strong>{user.displayName}</strong></span>,
                 disabled:true
             },
             {
@@ -34,6 +45,7 @@ class UserPanel extends Component {
         })
     }
     render() {
+        const {user} = this.state;
         return (
             <Grid style={{backgroundColor:'#4c3c4c'}}>
                 <Grid.Column>
@@ -44,7 +56,11 @@ class UserPanel extends Component {
                         </Header>
                     </Grid.Row>
                     <Header style={{padding:'0.25em'}} as="h4" inverted>
-                        <Dropdown trigger={<span>User</span>} options={this.dropdownOption()}/>
+                        <Dropdown trigger={
+                            <span>
+                                <Image src={user.photoURL} spaced="right" avatar/>
+                                {user.displayName}
+                            </span>} options={this.dropdownOption()}/>
                     </Header>
                 </Grid.Column>
             </Grid>
