@@ -54,7 +54,7 @@ class Login extends Component {
             <Grid textAlign="center" verticalAlign="middle" className="app">
                 <Grid.Column style={{maxWidth:450}}>
                     <Header as="h2" icon color="black" textAlign="center">
-                        <Icon name="code branch" color="black"/>
+                        <Icon name="user circle" color="black"/>
                         Login
                     </Header>
                     <Form onSubmit={this.handleSubmit} size="large">
