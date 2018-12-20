@@ -10,7 +10,8 @@ class Register extends Component {
         password:'',
         passwordConfirmation:'',
         errors:[],
-        loading:false
+        loading:false,
+        userRef:firebase.database().ref('users')
     };
     handleChange= (e)=>{
         this.setState({[e.target.name]:e.target.value})
@@ -62,6 +63,9 @@ class Register extends Component {
                     photoURL:`http://gravatar.com/avatar/${md5(result.user.email)}?d=identicon`
                 }).then(()=>{
                     this.setState({loading:false});
+                    this.saveUser(result).then(()=>{
+                        console.log('user saved');
+                    })
                 }).catch(err=>{
                     console.log(err);
                     this.setState({errors:errors.concat(err),loading:false});
@@ -75,6 +79,12 @@ class Register extends Component {
         
     }
 
+    saveUser = result=>{
+        return this.state.userRef.child(result.user.uid).set({
+            name:result.user.displayName,
+            avatar:result.user.photoURL
+        });
+    }
     displayErrors = (errors)=>errors.map((error,i)=>(<p key={i}>{error.message}</p>));
     handleInputError=(errors,inputName)=>{
         return (errors.some((error)=>
