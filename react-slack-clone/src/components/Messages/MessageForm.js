@@ -56,7 +56,7 @@ class MessageForm extends Component {
         return message;
     }
     render() {
-        const {errors} = this.state;
+        const {errors,message,isLoading} = this.state;
         return (
             <Segment className="message__form">
                 <Input
@@ -68,9 +68,11 @@ class MessageForm extends Component {
                     placeholder="Write your message"
                     onChange={this.handleChange}
                     className={errors.some(err=>err.message.includes('message')) ? 'error':''}
+                    value={message}
                 />
                 <Button.Group icon widths="2">
                     <Button
+                        disabled={isLoading}
                         color="yellow"
                         content="Add Apply"
                         labelPosition="left"
