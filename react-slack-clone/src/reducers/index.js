@@ -22,10 +22,25 @@ const user_reducer = (state = initUserState,action)=>{
     }
 }
 
-
+const initChannelState = {
+    currentChannel:null
+}
+const channel_reducers = (state=initChannelState,action)=>{
+    switch (action.type) {
+        case actionTypes.SET_CURRENT_CHANNEL:
+            return {
+                ...state,
+                currentChannel:action.payload.currentChannel
+            }
+    
+        default:
+            return state;
+    }
+}
 
 const root_reducer = combineReducers({
-    user:user_reducer
+    user:user_reducer,
+    channel:channel_reducers
 })
 
 export default root_reducer;
