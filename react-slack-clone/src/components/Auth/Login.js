@@ -59,7 +59,8 @@ class Login extends Component {
                     </Header>
                     <Form onSubmit={this.handleSubmit} size="large">
                         <Segment stacked>
-                            <Form.Input fluid 
+                            <Form.Input 
+                            fluid={true}
                             name="email" 
                             icon="mail" 
                             iconPosition="left" 
@@ -68,7 +69,8 @@ class Login extends Component {
                             className={this.handleInputError(errors,'email')} 
                             type="email" 
                             value={email}/>
-                            <Form.Input fluid 
+                            <Form.Input 
+                            fluid={true}
                             name="password" 
                             icon="lock" 
                             iconPosition="left" 
@@ -82,7 +84,7 @@ class Login extends Component {
                             disabled={loading}
                             className = {loading ? 'loading':''}
                             color="black" 
-                            fluid 
+                            fluid={true}
                             size="large"
                             >Submit</Button>
                           

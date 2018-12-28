@@ -40,3 +40,7 @@ body,
   height: 58vh;
   overflow-y: scroll;
 }
+
+.menu{
+  padding-bottom:'2em';
+}

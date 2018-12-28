@@ -41,7 +41,7 @@ class FileModal extends Component {
                 <Modal.Header>Select an Image File</Modal.Header>
                 <Modal.Content>
                     <Input 
-                    fluid
+                    fluid={true}
                     label="File types: jpg,png"
                     name="file"
                     type="file"

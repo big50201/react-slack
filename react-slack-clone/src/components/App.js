@@ -8,7 +8,7 @@ import MetaPanel from './MetaPanel/MetaPanel';
 import {connect} from 'react-redux';
 class App extends Component {
   render() {
-    const {currentUser,currentChannel} = this.props;
+    const {currentUser,currentChannel,isPrivateChannel} = this.props;
     return (
       <Grid columns="equal" className="app" style={{backgroundColor:'#eee'}}>
         <ColorPanel/>
@@ -19,7 +19,8 @@ class App extends Component {
           <Messages 
             key={currentChannel && currentChannel.id}
             currentChannel={currentChannel}
-            currentUser = {currentUser}/>
+            currentUser = {currentUser}
+            isPrivateChannel={isPrivateChannel}/>
         </Grid.Column>
         <Grid.Column width={4}>
           <MetaPanel/>
@@ -32,7 +33,8 @@ class App extends Component {
 const mapStateToProps = state=>{
   return ({
     currentUser:state.user.currentUser,
-    currentChannel: state.channel.currentChannel
+    currentChannel: state.channel.currentChannel,
+    isPrivateChannel:state.channel.isPrivateChannel
   });
 }
 export default connect(mapStateToProps)(App);

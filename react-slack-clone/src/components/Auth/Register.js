@@ -104,7 +104,8 @@ class Register extends Component {
                     </Header>
                     <Form onSubmit={this.handleSubmit} size="large">
                         <Segment stacked>
-                            <Form.Input fluid 
+                            <Form.Input 
+                            fluid={true} 
                             name="username" 
                             icon="user" 
                             iconPosition="left" 
@@ -112,7 +113,8 @@ class Register extends Component {
                             onChange={this.handleChange} 
                             type="text" 
                             value={username}/>
-                            <Form.Input fluid 
+                            <Form.Input 
+                            fluid={true}
                             name="email" 
                             icon="mail" 
                             iconPosition="left" 
@@ -121,7 +123,8 @@ class Register extends Component {
                             className={this.handleInputError(errors,'email')} 
                             type="email" 
                             value={email}/>
-                            <Form.Input fluid 
+                            <Form.Input 
+                            fluid={true} 
                             name="password" 
                             icon="lock" 
                             iconPosition="left" 
@@ -130,7 +133,8 @@ class Register extends Component {
                             className={this.handleInputError(errors,'password')} 
                             type="password" 
                             value={password}/>
-                            <Form.Input fluid 
+                            <Form.Input 
+                            fluid={true} 
                             name="passwordConfirmation" 
                             icon="repeat" iconPosition="left" 
                             placeholder="Password Confirmation" 
@@ -142,7 +146,7 @@ class Register extends Component {
                             disabled={loading}
                             className = {loading ? 'loading':''}
                             color="blue" 
-                            fluid 
+                            fluid="true" 
                             size="large"
                             >Submit</Button>
                           

@@ -27,10 +27,10 @@ class MessageForm extends Component {
     }
 
     sendMessage = ()=>{
-        const {messagesRef} = this.props;
+        const {getMessageRef} = this.props;
         const {message,channel} = this.state;
         if(message){
-            messagesRef
+            getMessageRef()
             .child(channel.id)
             .push()
             .set(this.createMessage())
@@ -73,8 +73,8 @@ class MessageForm extends Component {
 
     uploadFile = (file,metadata)=>{
         const pathToUpload = this.state.channel.id;
-        const ref = this.props.messagesRef;
-        const filepath = `chat/public/${uuidv4()}.jpg`;
+        const ref = this.props.getMessageRef();
+        const filepath = `${this.getPath()}/${uuidv4()}.jpg`;
         this.setState({
             uploadState:'uploading',
             uploadTask:this.state.storageRef.child(filepath).put(file,metadata)
@@ -119,12 +119,20 @@ class MessageForm extends Component {
                 });
             })
     }
+
+    getPath = ()=>{
+        if(this.props.isPrivateChannel){
+            return `chat/private-${this.state.channel.id}`
+        }else{
+            return `chat/public`
+        }
+    }
     render() {
         const {errors,message,isLoading,modal,uploadState,percentUploaded} = this.state;
         return (
             <Segment className="message__form">
                 <Input
-                    fluid
+                    fluid={true}
                     name="message"
                     style={{marginBottom:'0.7em'}}
                     label={<Button icon="add"/>}
@@ -144,6 +152,7 @@ class MessageForm extends Component {
                         onClick={this.sendMessage}
                     />
                     <Button
+                        disabled={this.uploadState === "uploading"}
                         color="teal"
                         onClick={this.openModal}
                         content="Upload Media"
