@@ -7,6 +7,7 @@ import Message from './Message';
 import {connect} from 'react-redux';
 import {setUserPosts} from '../../actions';
 import Typing from './Typing';
+import Skeleton from './Skeleton';
 
 class Messages extends Component {
     state = {
@@ -225,6 +226,16 @@ class Messages extends Component {
         this.messageEnd.scrollIntoView({behavior:'smooth'});
     }
 
+    displayMessageSkeleton = loading=>(
+        loading ? 
+        (<React.Fragment>
+            {[...Array(10)].map((_,i)=>(
+                <Skeleton key={i}/>
+
+            ))}
+        </React.Fragment>):null
+
+    )
     componentDidMount(){
         const {channel,user} = this.state;
         if(channel && user){
@@ -252,7 +263,8 @@ class Messages extends Component {
             searchResults,
             privateChannel,
             isChannelStarred,
-            typingUsers
+            typingUsers,
+            messageLoading
         } = this.state;
         return (
             <React.Fragment>
@@ -266,7 +278,8 @@ class Messages extends Component {
                     isChannelStarred={isChannelStarred}
                 />
                 <Segment>
-                    <Comment.Group className={progressBar ? "message__progress":"messages"}>
+                    <Comment.Group className={"messages"}>
+                        {this.displayMessageSkeleton(messageLoading)}
                         {searchTerm ? 
                             this.displayMessage(searchResults):
                             this.displayMessage(messages)}
