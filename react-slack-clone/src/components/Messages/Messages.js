@@ -221,11 +221,21 @@ class Messages extends Component {
         ))
     )
 
+    scrollToBottom = ()=>{
+        this.messageEnd.scrollIntoView({behavior:'smooth'});
+    }
+
     componentDidMount(){
         const {channel,user} = this.state;
         if(channel && user){
             this.addListener(channel.id);
             this.addUserStarListener(channel.id,user.uid);
+        }
+    }
+
+    componentDidUpdate(prevProps,prevState){
+        if(this.messageEnd){
+            this.scrollToBottom();
         }
     }
 
@@ -261,6 +271,7 @@ class Messages extends Component {
                             this.displayMessage(searchResults):
                             this.displayMessage(messages)}
                         {this.displayTypingUsers(typingUsers)}
+                        <div ref={node=>(this.messageEnd = node)}></div>
                         
                     </Comment.Group>
                 </Segment>
