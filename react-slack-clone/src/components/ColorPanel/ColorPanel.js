@@ -50,6 +50,12 @@ class ColorPanel extends Component {
         
     }
 
+    removeListener = ()=>{
+        this.state.userRef
+        .child(`${this.state.user.uid}/colors`)
+        .off();
+    }
+
     displayUserColors = colors=>(
         colors.length > 0 && colors.map((color,i)=>(
             <React.Fragment key={i}>
@@ -68,6 +74,9 @@ class ColorPanel extends Component {
         this.addListener(this.state.user.uid);
     }
 
+    componentWillUnmount(){
+        this.removeListener();
+    }
     render() {
         const {modal,primary,secondary,userColors} = this.state;
         return (

@@ -27,7 +27,8 @@ class Messages extends Component {
         isChannelStarred:false,
         typeRef:firebase.database().ref('typing'),
         typingUsers:[],
-        connectedRef:firebase.database().ref('.info/connected')
+        connectedRef:firebase.database().ref('.info/connected'),
+        listeners:[],
     }
 
     addListener = channelID=>{
@@ -65,6 +66,7 @@ class Messages extends Component {
             this.setState({typingUsers})
         })
 
+        this.addToListeners(channelID,this.state.typeRef,'child_added');
         this.state.typeRef
         .child(channelID)
         .on("child_removed",snap=>{
@@ -74,7 +76,8 @@ class Messages extends Component {
                 this.setState({typingUsers})
             }
         })   
-        
+        this.addToListeners(channelID,this.state.typeRef,'child_removed');
+
         this.state.connectedRef.on('value',snap=>{
             if(snap.val()===true){
                 this.state.typeRef
@@ -88,6 +91,17 @@ class Messages extends Component {
                 })
             }
         })
+    }
+
+    addToListeners = (id,ref,event)=>{
+        const index = this.state.listeners.findIndex(listener=>{
+            return listener.id === id && listener.ref === ref && listener.event === event
+        });
+
+        if(index !== -1){
+            const newListeners = {id,ref,event};
+            this.setState({listeners:this.state.listeners.concat(newListeners)});
+        }
     }
 
     displayMessage = messages=>{
@@ -236,9 +250,17 @@ class Messages extends Component {
         </React.Fragment>):null
 
     )
+
+    removeListener = listeners=>{
+        listeners.forEach(listener => {
+            listener.ref.child(listener.id).off(listener.event);
+        });
+    }
+    
     componentDidMount(){
-        const {channel,user} = this.state;
+        const {channel,user,listeners} = this.state;
         if(channel && user){
+            this.removeListener(listeners);
             this.addListener(channel.id);
             this.addUserStarListener(channel.id,user.uid);
         }
@@ -248,6 +270,11 @@ class Messages extends Component {
         if(this.messageEnd){
             this.scrollToBottom();
         }
+    }
+
+    componentWillUnmount(){
+        this.removeListener(this.state.listeners);
+        this.state.connectedRef.off();
     }
 
     render() {

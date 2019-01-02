@@ -30,7 +30,10 @@ class MessageForm extends Component {
     handleChange = e=>{
         this.setState({[e.target.name]:e.target.value});
     }
-    handleKeyDown = ()=>{
+    handleKeyDown = e=>{
+        if(e.ctrlKey && e.keyCode === 13){
+            this.sendMessage();
+        }
         const {message,typeRef,channel,user} = this.state;
         if(message){
             typeRef
@@ -144,7 +147,7 @@ class MessageForm extends Component {
 
     getPath = ()=>{
         if(this.props.isPrivateChannel){
-            return `chat/private-${this.state.channel.id}`
+            return `chat/private/${this.state.channel.id}`
         }else{
             return `chat/public`
         }
@@ -161,6 +164,7 @@ class MessageForm extends Component {
         this.setState({message:newMessage,emojiPicker:false});
         setTimeout(()=>this.messageInputRef.focus(),0);
     }
+
     colonToUnicode = message=>{
         return message.replace(/:[A-Za-z0-9_+-]+:/g,x=>{
             x = x.replace(/:/g,"")
@@ -174,6 +178,13 @@ class MessageForm extends Component {
             x =`:${x}:`
             return x;
         })
+    }
+
+    componentWillUnmount(){
+        if(this.state.uploadTask !==null){
+            this.state.uploadTask.cancel();
+            this.setState({uploadTask:null});
+        }
     }
     render() {
         const {

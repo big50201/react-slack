@@ -51,6 +51,12 @@ class DirectMessages extends Component {
 
     }
 
+    removeListeners = ()=>{
+        this.state.userRef.off();
+        this.state.presenceRef.off();
+        this.state.connectedRef.off();
+    }
+
     addStatusToUser = (userID,connected = true)=>{
         const upadtedUser = this.state.users.reduce((acc,user)=>{
             if(user.uid === userID){
@@ -90,6 +96,10 @@ class DirectMessages extends Component {
         if(this.state.user){
             this.addListeners(this.state.user.uid);
         }
+    }
+
+    componentWillUnmount(){
+        this.removeListeners();
     }
 
     render() {

@@ -185,6 +185,9 @@ class Channels extends Component {
 
     removeListeners = ()=>{
         this.state.channelRef.off();
+        this.state.channels.forEach(channel=>{
+            this.state.messageRef.child(channel.id).off();
+        })
     }
     componentDidMount(){
         this.addListeners();
