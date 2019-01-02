@@ -17,6 +17,7 @@ class Channels extends Component {
         channel:null,
         messageRef:firebase.database().ref('messages'),
         notifications:[],
+        typeRef:firebase.database().ref('typing')
     }
     closeModal = ()=>{
         this.setState({
@@ -144,6 +145,9 @@ class Channels extends Component {
     
     changeChannels=(channel)=>{
         this.setActiveChannel(channel);
+        this.state.typeRef.child(this.state.channel.id)
+               .child(this.state.user.uid)
+               .remove();
         this.clearNotifications();
         this.props.setCurrentChannel(channel);
         this.props.setPrivateChannel(false);

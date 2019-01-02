@@ -15,6 +15,7 @@ class MessageForm extends Component {
         uploadState:'',
         uploadTask:null,
         storageRef:firebase.storage().ref(),
+        typeRef:firebase.database().ref('typing'),
         percentUploaded:0
     }
 
@@ -25,10 +26,23 @@ class MessageForm extends Component {
     handleChange = e=>{
         this.setState({[e.target.name]:e.target.value});
     }
-
+    handleKeyDown = ()=>{
+        const {message,typeRef,channel,user} = this.state;
+        if(message){
+            typeRef
+            .child(channel.id)
+            .child(user.uid)
+            .set(user.displayName)
+        }else{
+            typeRef
+            .child(channel.id)
+            .child(user.uid)
+            .remove()
+        }
+    }
     sendMessage = ()=>{
         const {getMessageRef} = this.props;
-        const {message,channel} = this.state;
+        const {message,channel,typeRef,user} = this.state;
         if(message){
             getMessageRef()
             .child(channel.id)
@@ -40,6 +54,10 @@ class MessageForm extends Component {
                     message:'',
                     errors:[]
                 })
+                typeRef
+                .child(channel.id)
+                .child(user.uid)
+                .remove()
             })
             .catch((err)=>{
                 console.log(err);
@@ -127,6 +145,8 @@ class MessageForm extends Component {
             return `chat/public`
         }
     }
+
+    
     render() {
         const {errors,message,isLoading,modal,uploadState,percentUploaded} = this.state;
         return (
@@ -139,6 +159,7 @@ class MessageForm extends Component {
                     labelPosition="left"
                     placeholder="Write your message"
                     onChange={this.handleChange}
+                    onKeyDown = {this.handleKeyDown}
                     className={errors.some(err=>err.message.includes('message')) ? 'error':''}
                     value={message}
                 />
