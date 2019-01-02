@@ -6,7 +6,6 @@ import uuidv4 from 'uuid/v4';
 import ProgressBar from './ProgressBar';
 import {Picker,emojiIndex} from "emoji-mart";
 import 'emoji-mart/css/emoji-mart.css';
-import { type } from 'os';
 class MessageForm extends Component {
     state = {
         message:'',
