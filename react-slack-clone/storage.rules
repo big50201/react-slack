@@ -1,5 +1,5 @@
 service firebase.storage {
-  match /b/reack-slack-clone.appspot.com/o {
+  match /b/react-slack-clone-17532.appspot.com/o {
     match /avatars {
       match /user/{userId} {
         allow read: if request.auth != null;
