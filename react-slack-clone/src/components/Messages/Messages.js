@@ -56,7 +56,7 @@ class Messages extends Component {
             this.setState({
                 messageLoading:false
             });
-            this.countUniqueUsers(loadMessages);
+            
             this.countUserPosts(loadMessages);
         }
     }
