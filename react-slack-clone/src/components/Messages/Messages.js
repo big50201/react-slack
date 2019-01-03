@@ -39,16 +39,26 @@ class Messages extends Component {
     addMessageListener = channelID=>{
         let loadMessages = [];
         const ref = this.getMessageRef();
+       
         ref.child(channelID).on('child_added',snap=>{
             loadMessages.push(snap.val());
             this.setState({
                 messages:loadMessages,
                 messageLoading:false
-            })
+            });
 
             this.countUniqueUsers(loadMessages);
             this.countUserPosts(loadMessages);
         });
+
+        //若channel還未有訊息時
+        if(channelID !== null && loadMessages.length === 0){
+            this.setState({
+                messageLoading:false
+            });
+            this.countUniqueUsers(loadMessages);
+            this.countUserPosts(loadMessages);
+        }
     }
 
     addTypingListener = channelID=>{
@@ -240,14 +250,14 @@ class Messages extends Component {
         this.messageEnd.scrollIntoView({behavior:'smooth'});
     }
 
-    displayMessageSkeleton = loading=>(
+    displayMessageSkeleton = (loading)=>(
         loading ? 
         (<React.Fragment>
             {[...Array(10)].map((_,i)=>(
                 <Skeleton key={i}/>
-
             ))}
-        </React.Fragment>):null
+        </React.Fragment>
+        ):null
 
     )
 
@@ -283,7 +293,6 @@ class Messages extends Component {
             messages,
             channel,
             user,
-            progressBar,
             numUniqueUsers,
             searchTerm,
             searchLoading,
