@@ -16,6 +16,7 @@ class App extends Component {
         currentUser={currentUser}/>
         <SidePanel 
           key={currentUser && currentUser.uid}
+          currentChannel={currentChannel}
           currentUser={currentUser}
           primaryColor={primaryColor}  
         />

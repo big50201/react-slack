@@ -8,7 +8,7 @@ class Starred extends Component {
     state = {
         user:this.props.currentUser,
         usersRef:firebase.database().ref('users'),
-        activeChannel:'',
+        // activeChannel:'',
         starredChannels:[]
     }
 
@@ -21,20 +21,20 @@ class Starred extends Component {
                     onClick={()=>this.changeChannels(channel)}
                     name={channel.name}
                     style={{opacity:0.7}}
-                    active={channel.id === this.state.activeChannel}
+                    active={channel.id === this.props.currentChannel.id}
                 >
                 ＃{channel.name}
                 </Menu.Item>)
             });
 
-    setActiveChannel = channel=>{
-        this.setState({
-            activeChannel:channel.id
-        });
-    }
+    // setActiveChannel = channel=>{
+    //     this.setState({
+    //         activeChannel:channel.id
+    //     });
+    // }
 
     changeChannels=(channel)=>{
-        this.setActiveChannel(channel);
+        // this.setActiveChannel(channel);
         this.props.setCurrentChannel(channel);
         this.props.setPrivateChannel(false);
     }

@@ -13,7 +13,7 @@ class Channels extends Component {
         user:this.props.currentUser,
         errors:[],
         firstLoad:true,
-        activeChannel:'',
+        // activeChannel:'',
         channel:null,
         messageRef:firebase.database().ref('messages'),
         notifications:[],
@@ -117,7 +117,7 @@ class Channels extends Component {
         const firstChannel = channels[0];
         if(firstLoad && channels.length>0){
             this.props.setCurrentChannel(firstChannel);
-            this.setActiveChannel(firstChannel);
+            // this.setActiveChannel(firstChannel);
             this.setState({channel:firstChannel});
 
         }
@@ -133,7 +133,7 @@ class Channels extends Component {
                 onClick={()=>this.changeChannels(channel)}
                 name={channel.name}
                 style={{opacity:0.7}}
-                active={channel.id === this.state.activeChannel}
+                active={channel.id === (this.props.currentChannel && this.props.currentChannel.id)}
             >
             {
                 this.getNotificationCount(channel) && 
@@ -144,7 +144,7 @@ class Channels extends Component {
         });
     
     changeChannels=(channel)=>{
-        this.setActiveChannel(channel);
+        // this.setActiveChannel(channel);
         this.state.typeRef.child(this.state.channel.id)
                .child(this.state.user.uid)
                .remove();
@@ -154,11 +154,11 @@ class Channels extends Component {
         this.setState({channel});
     }
 
-    setActiveChannel = channel=>{
-        this.setState({
-            activeChannel:channel.id
-        })
-    }
+    // setActiveChannel = channel=>{
+    //     this.setState({
+    //         activeChannel:channel.id
+    //     })
+    // }
 
     clearNotifications = ()=>{
         let index = this.state.notifications

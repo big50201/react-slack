@@ -6,7 +6,7 @@ import DirectMessages from './DirectMessages';
 import Starred from './Starred';
 class SidePanel extends Component {
     render() {
-        const {currentUser,primaryColor} = this.props;
+        const {currentUser,primaryColor,currentChannel} = this.props;
         return (
             <Menu
                 size="large"
@@ -15,9 +15,9 @@ class SidePanel extends Component {
                 vertical
                 style={{backgroundColor:primaryColor,fontSize:'1.2rem'}}>
                 <UserPanel primaryColor={primaryColor} currentUser={currentUser}/>
-                <Starred currentUser={currentUser}/>
-                <Channels currentUser={currentUser}/>
-                <DirectMessages currentUser={currentUser}/>
+                <Starred currentUser={currentUser} currentChannel={currentChannel}/>
+                <Channels currentUser={currentUser} currentChannel={currentChannel}/>
+                <DirectMessages currentUser={currentUser} currentChannel={currentChannel}/>
             </Menu>
         );
     }
