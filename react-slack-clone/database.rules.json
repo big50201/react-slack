@@ -12,7 +12,7 @@
       ".read": "auth != null",
       "$channelId": {
         ".write": "auth != null",
-        ".validate": "newData.hasChildren(['id', 'name', 'createdBy', 'details'])",
+        ".validate": "newData.hasChildren(['id', 'name', 'createBy', 'details'])",
         "id": {
           ".validate": "newData.val() === $channelId"
         },
