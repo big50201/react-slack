@@ -133,7 +133,7 @@ class Channels extends Component {
                 onClick={()=>this.changeChannels(channel)}
                 name={channel.name}
                 style={{opacity:0.7}}
-                active={channel.id === (this.props.currentChannel && this.props.currentChannel.id)}
+                active={(channel && channel.id) === (this.props.currentChannel && this.props.currentChannel.id)}
             >
             {
                 this.getNotificationCount(channel) && 

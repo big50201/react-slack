@@ -7,10 +7,31 @@ import Messages from './Messages/Messages';
 import MetaPanel from './MetaPanel/MetaPanel';
 import {connect} from 'react-redux';
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      width: window.innerWidth, 
+      height: window.innerHeight
+    };
+  }
+  
+  componentDidMount() {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  }
+  
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  }
+  
+  updateWindowDimensions = ()=>{
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  }
+
   render() {
     const {currentUser,currentChannel,isPrivateChannel,userPosts,primaryColor,secondaryColor} = this.props;
     return (
-      <Grid columns="equal" className="app" style={{backgroundColor:secondaryColor}}>
+      <Grid columns="equal" className="app" style={{backgroundColor:secondaryColor,width:this.state.width,height:this.state.height}}>
         <ColorPanel 
         key={currentUser && currentUser.name}
         currentUser={currentUser}/>

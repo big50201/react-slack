@@ -21,7 +21,7 @@ class Starred extends Component {
                     onClick={()=>this.changeChannels(channel)}
                     name={channel.name}
                     style={{opacity:0.7}}
-                    active={channel.id === this.props.currentChannel.id}
+                    active={(channel && channel.id) === (this.props.currentChannel && this.props.currentChannel.id)}
                 >
                 ＃{channel.name}
                 </Menu.Item>)

@@ -313,8 +313,8 @@ class Messages extends Component {
                     handleStar={this.handleStar}
                     isChannelStarred={isChannelStarred}
                 />
-                <Segment>
-                    <Comment.Group className={"messages"}>
+                <Segment className={"messages"}>
+                    <Comment.Group>
                         {this.displayMessageSkeleton(messageLoading)}
                         {searchTerm ? 
                             this.displayMessage(searchResults):
