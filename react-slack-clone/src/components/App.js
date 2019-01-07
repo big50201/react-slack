@@ -29,7 +29,7 @@ class App extends Component {
   }
 
   render() {
-    const {currentUser,currentChannel,isPrivateChannel,userPosts,primaryColor,secondaryColor} = this.props;
+    const {currentUser,currentChannel,isPrivateChannel,updatedChannel,userPosts,primaryColor,secondaryColor} = this.props;
     return (
       <Grid columns="equal" className="app" style={{backgroundColor:secondaryColor,width:this.state.width,height:this.state.height}}>
         <ColorPanel 
@@ -39,14 +39,17 @@ class App extends Component {
           key={currentUser && currentUser.uid}
           currentChannel={currentChannel}
           currentUser={currentUser}
-          primaryColor={primaryColor}  
+          primaryColor={primaryColor}
+          updatedChannel={updatedChannel}  
+          isPrivateChannel={isPrivateChannel}
         />
         <Grid.Column style={{marginLeft:320}}>
           <Messages 
             key={currentChannel && currentChannel.id}
             currentChannel={currentChannel}
             currentUser = {currentUser}
-            isPrivateChannel={isPrivateChannel}/>
+            isPrivateChannel={isPrivateChannel}
+            updatedChannel={updatedChannel}/>
         </Grid.Column>
         <Grid.Column width={4}>
           <MetaPanel 
@@ -54,6 +57,7 @@ class App extends Component {
             currentChannel = {currentChannel}
             isPrivateChannel={isPrivateChannel}
             userPosts={userPosts}
+            updatedChannel={updatedChannel}
           />
         </Grid.Column>
       </Grid>
@@ -66,9 +70,10 @@ const mapStateToProps = state=>{
     currentUser:state.user.currentUser,
     currentChannel: state.channel.currentChannel,
     isPrivateChannel:state.channel.isPrivateChannel,
+    updatedChannel:state.channel.updatedChannel,
     userPosts:state.channel.userPosts,
     primaryColor:state.colors.primaryColor,
-    secondaryColor:state.colors.secondaryColor
+    secondaryColor:state.colors.secondaryColor,
   });
 }
 export default connect(mapStateToProps)(App);

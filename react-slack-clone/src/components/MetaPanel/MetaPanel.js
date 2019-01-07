@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button} from 'semantic-ui-react';
 import firebase from '../../firebase';
 import {connect} from 'react-redux';
-import {setCurrentChannel} from '../../actions'; 
+import {setCurrentChannel,updatedCurrentChannel} from '../../actions'; 
 class MetaPanel extends Component {
     state = {
         activeIndex:0,
@@ -12,7 +12,8 @@ class MetaPanel extends Component {
         channelRef :firebase.database().ref('channels'),
         errors:[],
         channelName:this.props.currentChannel && this.props.currentChannel.name,
-        channelDetails:this.props.currentChannel && this.props.currentChannel.details
+        channelDetails:this.props.currentChannel && this.props.currentChannel.details,
+        updatedChannel:this.props.updatedChannel
     }
 
     setActiveIndex = (e,titileProps)=>{
@@ -71,20 +72,21 @@ class MetaPanel extends Component {
         .child(updatedChannel.id)
         .update(updatedChannel)
         .then(()=>{
+            this.props.updatedCurrentChannel(updatedChannel);
             this.setState({
                 channel:updatedChannel,
                 channelName:updatedChannel.name,
-                channelDetails:updatedChannel.details
+                channelDetails:updatedChannel.details,
+                updatedChannel:updatedChannel
             });
-            this.closeModal();
             //TODO edit all pages change channel
-            this.props.setCurrentChannel(updatedChannel);
+            this.closeModal();
+            
         })
         .catch((err)=>{
             console.log(err);
             this.setState({errors:this.state.errors.concat(err)});
         })
-
     }
     removeListeners = ()=>{
         this.state.channelRef.off();
@@ -188,4 +190,4 @@ class MetaPanel extends Component {
     }
 }
 
-export default connect(null,{setCurrentChannel})(MetaPanel);
+export default connect(null,{updatedCurrentChannel})(MetaPanel);

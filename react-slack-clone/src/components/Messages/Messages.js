@@ -287,6 +287,13 @@ class Messages extends Component {
         this.state.connectedRef.off();
     }
 
+    componentWillReceiveProps(nextProps){
+        if(nextProps.updatedChannel !== null && 
+            nextProps.updatedChannel !== nextProps.currentChannel){
+            this.setState({channel:nextProps.updatedChannel});
+        }
+    }
+
     render() {
         const {
             messagesRef,

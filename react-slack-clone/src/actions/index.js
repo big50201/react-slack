@@ -1,5 +1,5 @@
 import * as actionTypes from './types';
-
+import firebase from '../firebase';
 export const setUser = user=>{
     return {
         type:actionTypes.SET_USER,
@@ -51,3 +51,12 @@ export const setColors = (primaryColor,secondaryColor)=>{
         }
     }
 }
+
+export const updatedCurrentChannel = (channel) =>{
+    return {
+        type:actionTypes.UPDATED_CURRENT_CHANNEL,
+        payload:{
+                updatedChannel:channel
+            }
+        }
+  }

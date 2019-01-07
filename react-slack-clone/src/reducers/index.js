@@ -25,7 +25,8 @@ const user_reducer = (state = initUserState,action)=>{
 const initChannelState = {
     currentChannel:null,
     isPrivateChannel:false,
-    userPosts:null
+    userPosts:null,
+    updatedChannel:null
 }
 const channel_reducers = (state=initChannelState,action)=>{
     switch (action.type) {
@@ -43,6 +44,11 @@ const channel_reducers = (state=initChannelState,action)=>{
             return {
                 ...state,
                 userPosts:action.payload.userPosts
+            }
+        case actionTypes.UPDATED_CURRENT_CHANNEL:
+            return {
+                ...state,
+                updatedChannel:action.payload.updatedChannel
             }
         default:
             return state;

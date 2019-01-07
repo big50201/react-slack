@@ -75,6 +75,41 @@ class Starred extends Component {
     componentWillUnmount(){
         this.removeListeners();
     }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.updatedChannel !== null && 
+            nextProps.updatedChannel !== this.props.currentChannel){
+                let starredChannel = {
+                    name:nextProps.updatedChannel.name,
+                    details:nextProps.updatedChannel.details,
+                    createBy:{
+                        name:nextProps.updatedChannel.createBy.name,
+                        avatar:nextProps.updatedChannel.createBy.avatar
+                    }
+                }
+                let starredChannels = [];
+                if(!this.props.isPrivateChannel){
+                    this.state.usersRef
+                    .child(this.state.user.uid)
+                    .child('starred')
+                    .child(nextProps.currentChannel.id)
+                    .update(starredChannel)
+                    .then(()=>{
+                        this.state.usersRef
+                        .child(this.state.user.uid)
+                        .child('starred')
+                        .on("child_added",snap=>{
+                            const starredChannel = {id:snap.key,...snap.val()};
+                            starredChannels.push(starredChannel);
+                            this.setState({starredChannels});
+                        })
+                    });
+                }
+                
+        }
+    }
+
+    
     render() {
         const {starredChannels} = this.state;
         return (

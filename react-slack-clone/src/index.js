@@ -9,13 +9,23 @@ import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import 'semantic-ui-css/semantic.min.css';
 import firebase from 'firebase';
-import {createStore} from 'redux';
+import {createStore,applyMiddleware} from 'redux';
 import {Provider,connect} from 'react-redux';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import root_reducer from './reducers';
 import {setUser,clearUser} from './actions';
 import Spinner from './Spinner';
-const store = createStore(root_reducer,composeWithDevTools());
+import thunk from 'redux-thunk';
+import {createLogger} from 'redux-logger' // 利用redux-logger記錄日誌
+// 調用日誌 collapsed讓action折疊
+const loggerMiddleware = createLogger({collapsed:true});
+const middleware = [thunk, loggerMiddleware];
+const store = createStore(
+    root_reducer,
+    composeWithDevTools(
+        applyMiddleware(...middleware)
+    )
+);
 
 class Root extends Component{
     componentDidMount(){

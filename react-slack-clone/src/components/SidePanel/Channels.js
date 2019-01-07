@@ -3,6 +3,7 @@ import {Menu,Icon,Modal,Form,Input,Button,Label} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {setCurrentChannel,setPrivateChannel} from '../../actions';
 import firebase from 'firebase';
+import shallowEqual from 'shallowequal';
 class Channels extends Component {
     state = {
         channels:[],
@@ -14,7 +15,7 @@ class Channels extends Component {
         errors:[],
         firstLoad:true,
         // activeChannel:'',
-        channel:null,
+        channel:this.props.updatedChannel,
         messageRef:firebase.database().ref('messages'),
         notifications:[],
         typeRef:firebase.database().ref('typing')
@@ -127,20 +128,21 @@ class Channels extends Component {
 
     displayChannels = (channels)=>
          channels.length>0 && channels.map(channel=>{
-            return (
-            <Menu.Item
-                key={channel.id}
-                onClick={()=>this.changeChannels(channel)}
-                name={channel.name}
-                style={{opacity:0.7}}
-                active={(channel && channel.id) === (this.props.currentChannel && this.props.currentChannel.id)}
-            >
-            {
-                this.getNotificationCount(channel) && 
-                (<Label color="red">{this.getNotificationCount(channel)}</Label>)
-            }
-            ＃{channel.name}
-            </Menu.Item>)
+                return (
+                    <Menu.Item
+                        key={channel.id}
+                        onClick={()=>this.changeChannels(channel)}
+                        name={channel.name}
+                        style={{opacity:0.7}}
+                        active={(channel && channel.id) === (this.props.currentChannel && this.props.currentChannel.id)}
+                    >
+                    {
+                        this.getNotificationCount(channel) && 
+                        (<Label color="red">{this.getNotificationCount(channel)}</Label>)
+                    }
+                    ＃{channel.name}
+                    </Menu.Item>)
+            
         });
     
     changeChannels=(channel)=>{
@@ -196,6 +198,19 @@ class Channels extends Component {
     componentWillUnmount(){
         this.removeListeners();
     }
+
+    componentWillReceiveProps(nextProps){
+        let channels = [];
+        if(nextProps.updatedChannel !== null && 
+            nextProps.updatedChannel !== nextProps.currentChannel){
+            this.state.channelRef.on('child_added',snap=>{
+                channels.push(snap.val());
+                this.setState({channels});
+            });
+        }
+    }
+    
+
 
     render() {
         const {channels,modal} = this.state;
