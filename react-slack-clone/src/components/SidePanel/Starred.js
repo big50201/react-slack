@@ -9,7 +9,7 @@ class Starred extends Component {
         user:this.props.currentUser,
         usersRef:firebase.database().ref('users'),
         // activeChannel:'',
-        starredChannels:[]
+        starredChannels:[],
     }
 
     displayChannels = (starredChannels)=>
@@ -80,30 +80,37 @@ class Starred extends Component {
         if(nextProps.updatedChannel !== null && 
             nextProps.updatedChannel !== this.props.currentChannel){
                 let starredChannel = {
-                    name:nextProps.updatedChannel.name,
-                    details:nextProps.updatedChannel.details,
-                    createBy:{
-                        name:nextProps.updatedChannel.createBy.name,
-                        avatar:nextProps.updatedChannel.createBy.avatar
+                        [nextProps.updatedChannel.id]:{
+                        name:nextProps.updatedChannel.name,
+                        details:nextProps.updatedChannel.details,
+                        createBy:{
+                            name:nextProps.updatedChannel.createBy.name,
+                            avatar:nextProps.updatedChannel.createBy.avatar
+                        }
                     }
                 }
                 let starredChannels = [];
                 if(!this.props.isPrivateChannel){
-                    this.state.usersRef
-                    .child(this.state.user.uid)
-                    .child('starred')
-                    .child(nextProps.currentChannel.id)
-                    .update(starredChannel)
-                    .then(()=>{
+                    if(nextProps.updatedChannel.id === this.props.currentChannel.id){
                         this.state.usersRef
-                        .child(this.state.user.uid)
-                        .child('starred')
-                        .on("child_added",snap=>{
-                            const starredChannel = {id:snap.key,...snap.val()};
-                            starredChannels.push(starredChannel);
-                            this.setState({starredChannels});
-                        })
-                    });
+                        .child(`${this.state.user.uid}/starred`)
+                        .update(starredChannel)
+                        .then(()=>{
+                            this.state.usersRef
+                            .child(this.state.user.uid)
+                            .child('starred')
+                            .on("child_added",snap=>{
+                                const starredChannel = {id:snap.key,...snap.val()};
+                                const filteredChannels = this.state.starredChannels.filter(channel=>{
+                                    return channel.id !==starredChannel.id;
+                                });
+                                this.setState({starredChannels:[...filteredChannels,starredChannel]});
+                            })
+
+                           
+                        });
+                    }
+                    
                 }
                 
         }
