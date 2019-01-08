@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button} from 'semantic-ui-react';
+import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button, LabelDetail} from 'semantic-ui-react';
 import firebase from '../../firebase';
 import {connect} from 'react-redux';
 import {setCurrentChannel,updatedCurrentChannel} from '../../actions'; 
@@ -9,11 +9,13 @@ class MetaPanel extends Component {
         privateChannel:this.props.isPrivateChannel,
         channel:this.props.currentChannel,
         modal:false,
+        usersRef:firebase.database().ref('users'),
         channelRef :firebase.database().ref('channels'),
         errors:[],
         channelName:this.props.currentChannel && this.props.currentChannel.name,
         channelDetails:this.props.currentChannel && this.props.currentChannel.details,
-        updatedChannel:this.props.updatedChannel
+        updatedChannel:this.props.updatedChannel,
+        createAvatar:''
     }
 
     setActiveIndex = (e,titileProps)=>{
@@ -91,6 +93,19 @@ class MetaPanel extends Component {
     removeListeners = ()=>{
         this.state.channelRef.off();
     }
+    componentDidMount(){
+        let avatar = '';
+        const {privateChannel,channel} = this.state;
+        this.state.usersRef.on('child_added',snap=>
+        {
+            if(!privateChannel && channel && (snap.val().name === channel.createBy.name)){
+                avatar = snap.val().avatar;
+            }
+            
+        });
+        this.setState({createAvatar:avatar});
+
+    }
 
     componentWillUnmount(){
         this.removeListeners();
@@ -146,7 +161,7 @@ class MetaPanel extends Component {
                     </Accordion.Title>
                     <Accordion.Content active={activeIndex === 2}>
                         <Header as="h3">
-                            <Image circular src={channel && channel.createBy.avatar}/>
+                            <Image circular src={channel && this.state.createAvatar}/>
                             {channel && channel.createBy.name}
                         </Header>
 

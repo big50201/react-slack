@@ -116,10 +116,13 @@ class Messages extends Component {
 
     displayMessage = messages=>{
         return (messages.length>0 && messages.map(message=>{
+            let avatar = '';
+            this.state.userRef.child(message.user.id).on('value',snap=>(avatar = snap.val().avatar));
             return (
             <Message
                 key={message.timestamp}
                 message={message}
+                avatar = {avatar}
                 user={this.state.user}
             />)
         }))
@@ -155,8 +158,10 @@ class Messages extends Component {
                 acc[message.user.name].count +=1;
                 
             }else{
+                let avatar = '';
+                this.state.userRef.child(message.user.id).on('value',snap=>(avatar = snap.val().avatar));
                 acc[message.user.name] = {
-                    avatar:message.user.avatar,
+                    avatar:avatar,
                     count:1
                 }
             }
