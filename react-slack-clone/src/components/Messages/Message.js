@@ -9,6 +9,14 @@ const isImage = message=>{
     return message.hasOwnProperty('image')&& !message.hasOwnProperty('content');
 }
 
+const isLinkMessage = (content)=>{
+    if(content.match('http')){
+        return <Comment.Text><a href={content} target="_blank">{content}</a></Comment.Text>
+    }else{
+        return <Comment.Text>{content}</Comment.Text>
+    }
+}
+
 const timeFromNow = timestamp=>moment(timestamp).fromNow();
 const Message = ({message,user,avatar})=>(
     <Comment>
@@ -18,7 +26,7 @@ const Message = ({message,user,avatar})=>(
             <Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
             {isImage(message) ? 
             <Image src={message.image} className="message__image" />:
-            <Comment.Text>{message.content}</Comment.Text>
+            isLinkMessage(message.content)
             }
         </Comment.Content>
     </Comment>
