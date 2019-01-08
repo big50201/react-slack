@@ -66,7 +66,7 @@ class Messages extends Component {
         this.state.typeRef
         .child(channelID)
         .on("child_added",snap=>{
-            if(snap.key !== this.state.user.uid){
+            if(snap.key !== this.state.user.uid ){
                 typingUsers = typingUsers.concat({
                     id:snap.key,
                     name:snap.val()
@@ -82,7 +82,7 @@ class Messages extends Component {
         .on("child_removed",snap=>{
             const index = typingUsers.findIndex(user=>user.id === snap.key)
             if(index !== -1){
-                typingUsers = typingUsers.fill(user=>user.id !== snap.key);
+                typingUsers = typingUsers.filter(user=>user.id !== snap.key);
                 this.setState({typingUsers})
             }
         })   
