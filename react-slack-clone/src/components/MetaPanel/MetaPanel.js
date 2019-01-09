@@ -100,10 +100,9 @@ class MetaPanel extends Component {
         {
             if(!privateChannel && channel && (snap.val().name === channel.createBy.name)){
                 avatar = snap.val().avatar;
+                this.setState({createAvatar:avatar})
             }
-            
         });
-        this.setState({createAvatar:avatar});
 
     }
 
@@ -161,7 +160,7 @@ class MetaPanel extends Component {
                     </Accordion.Title>
                     <Accordion.Content active={activeIndex === 2}>
                         <Header as="h3">
-                            <Image circular src={channel && this.state.createAvatar}/>
+                            <Image circular src={this.state.createAvatar}/>
                             {channel && channel.createBy.name}
                         </Header>
 
