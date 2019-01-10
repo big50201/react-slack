@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button, LabelDetail} from 'semantic-ui-react';
 import firebase from '../../firebase';
 import {connect} from 'react-redux';
-import {setCurrentChannel,updatedCurrentChannel} from '../../actions'; 
+import {updatedCurrentChannel} from '../../actions'; 
 class MetaPanel extends Component {
     state = {
         activeIndex:0,
@@ -81,7 +81,34 @@ class MetaPanel extends Component {
                 channelDetails:updatedChannel.details,
                 updatedChannel:updatedChannel
             });
-            //TODO edit all pages change channel
+            let starred = {};
+            let userIDs = [];
+            this.state.usersRef.on('child_added',snap=>{
+                if(snap.child('starred').val()!==null){
+                    starred = snap.child('starred').val();
+                    if(this.state.channel.id in starred){
+                        userIDs.push(snap.key);
+                    }
+                }
+            })
+            if(userIDs.length>0){
+                userIDs.forEach(item=>{
+                    this.state.usersRef.child(`${item}/starred`).update({
+                        [this.state.channel.id]:{
+                            name:this.state.channel.name,
+                            details:this.state.channel.details,
+                            createBy:{
+                                name:this.state.channel.createBy.name,
+                                avatar:this.state.channel.createBy.avatar
+                            }
+                        }
+                    }).then(()=>{
+                        console.log('starred updated')
+                    }).catch(err=>{
+                        console.log(err);
+                    })
+                })
+            }
             this.closeModal();
             
         })
@@ -89,10 +116,12 @@ class MetaPanel extends Component {
             console.log(err);
             this.setState({errors:this.state.errors.concat(err)});
         })
+
     }
     removeListeners = ()=>{
         this.state.channelRef.off();
     }
+
     componentDidMount(){
         let avatar = '';
         const {privateChannel,channel} = this.state;
@@ -103,12 +132,14 @@ class MetaPanel extends Component {
                 this.setState({createAvatar:avatar})
             }
         });
-
     }
 
     componentWillUnmount(){
         this.removeListeners();
     }
+
+
+      
 
     render() {
         const {activeIndex,privateChannel,channel,modal,channelName,channelDetails} = this.state;
