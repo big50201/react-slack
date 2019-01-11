@@ -28,6 +28,13 @@ class App extends Component {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
+  componentWillReceiveProps(nextProps){
+    if(nextProps.updatedChannel!==null){
+      console.log(nextProps.updatedChannel);
+    }
+    
+  }
+
   render() {
     const {currentUser,currentChannel,isPrivateChannel,updatedChannel,userPosts,primaryColor,secondaryColor} = this.props;
     return (

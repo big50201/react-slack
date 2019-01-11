@@ -77,42 +77,36 @@ class Starred extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.updatedChannel !== null && 
-            nextProps.updatedChannel !== this.props.currentChannel){
-                let starredChannel = {
-                        [nextProps.updatedChannel.id]:{
-                        name:nextProps.updatedChannel.name,
-                        details:nextProps.updatedChannel.details,
-                        createBy:{
-                            name:nextProps.updatedChannel.createBy.name,
-                            avatar:nextProps.updatedChannel.createBy.avatar
-                        }
+        if(nextProps.updatedChannel !== null && !this.props.isPrivateChannel){
+            let starredChannel = {
+                    [nextProps.updatedChannel.id]:{
+                    name:nextProps.updatedChannel.name,
+                    details:nextProps.updatedChannel.details,
+                    createBy:{
+                        name:nextProps.updatedChannel.createBy.name,
+                        avatar:nextProps.updatedChannel.createBy.avatar
                     }
                 }
-                let starredChannels = [];
-                if(!this.props.isPrivateChannel){
-                    if(nextProps.updatedChannel.id === this.props.currentChannel.id){
-                        this.state.usersRef
-                        .child(`${this.state.user.uid}/starred`)
-                        .update(starredChannel)
-                        .then(()=>{
-                            this.state.usersRef
-                            .child(this.state.user.uid)
-                            .child('starred')
-                            .on("child_added",snap=>{
-                                const starredChannel = {id:snap.key,...snap.val()};
-                                const filteredChannels = this.state.starredChannels.filter(channel=>{
-                                    return channel.id !==starredChannel.id;
-                                });
-                                this.setState({starredChannels:[...filteredChannels,starredChannel]});
-                            })
-
-                           
+            }
+            if(nextProps.updatedChannel.id === this.props.currentChannel.id){
+                this.state.usersRef
+                .child(`${this.state.user.uid}/starred`)
+                .update(starredChannel)
+                .then(()=>{
+                    this.state.usersRef
+                    .child(this.state.user.uid)
+                    .child('starred')
+                    .on("child_added",snap=>{
+                        const starredChannel = {id:snap.key,...snap.val()};
+                        const filteredChannels = this.state.starredChannels.filter(channel=>{
+                            return channel.id !==starredChannel.id;
                         });
-                    }
+                        this.setState({starredChannels:[...filteredChannels,starredChannel]});
+                    })
+
                     
-                }
-                
+                });
+            } 
         }
     }
 

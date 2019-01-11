@@ -201,8 +201,7 @@ class Channels extends Component {
 
     componentWillReceiveProps(nextProps){
         let channels = [];
-        if(nextProps.updatedChannel !== null && 
-            nextProps.updatedChannel !== nextProps.currentChannel){
+        if(nextProps.updatedChannel !== null){
             this.state.channelRef.on('child_added',snap=>{
                 channels.push(snap.val());
                 this.setState({channels});
