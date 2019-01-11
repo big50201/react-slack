@@ -4,7 +4,7 @@ import UserPanel from './UserPanel';
 import Channels from './Channels';
 import DirectMessages from './DirectMessages';
 import Starred from './Starred';
-import firebase from '../../firebase';
+
 class SidePanel extends Component {
     render() {
         const {currentUser,primaryColor,currentChannel,updatedChannel,isPrivateChannel,allChannels} = this.props;
