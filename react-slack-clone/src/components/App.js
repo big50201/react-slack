@@ -6,12 +6,14 @@ import SidePanel from './SidePanel/SidePanel';
 import Messages from './Messages/Messages';
 import MetaPanel from './MetaPanel/MetaPanel';
 import {connect} from 'react-redux';
+import firebase from '../firebase';
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = { 
       width: window.innerWidth, 
-      height: window.innerHeight
+      height: window.innerHeight,
+      allChannels:[]
     };
   }
   
@@ -27,15 +29,23 @@ class App extends Component {
   updateWindowDimensions = ()=>{
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
-
-  componentWillReceiveProps(nextProps){
-    if(nextProps.updatedChannel!==null){
-      console.log(nextProps.updatedChannel);
-    }
     
+  componentWillReceiveProps(nextProps){
+    if(nextProps.updatedChannel === null){
+      let allChannels=[];
+      //channels
+      firebase.database().ref('channels').on('value',snap=>{
+         allChannels=[];
+         firebase.database().ref('channels').on('child_added',channel=>{
+            allChannels.push(channel.val());
+            this.setState({allChannels});
+         });
+      });
+    }
   }
 
   render() {
+    const {allChannels} = this.state;
     const {currentUser,currentChannel,isPrivateChannel,updatedChannel,userPosts,primaryColor,secondaryColor} = this.props;
     return (
       <Grid columns="equal" className="app" style={{backgroundColor:secondaryColor,width:this.state.width,height:this.state.height}}>
@@ -49,6 +59,7 @@ class App extends Component {
           primaryColor={primaryColor}
           updatedChannel={updatedChannel}  
           isPrivateChannel={isPrivateChannel}
+          allChannels={allChannels}
         />
         <Grid.Column style={{marginLeft:320}}>
           <Messages 
@@ -78,6 +89,7 @@ const mapStateToProps = state=>{
     currentChannel: state.channel.currentChannel,
     isPrivateChannel:state.channel.isPrivateChannel,
     updatedChannel:state.channel.updatedChannel,
+    allChannels:state.channel.allChannels,
     userPosts:state.channel.userPosts,
     primaryColor:state.colors.primaryColor,
     secondaryColor:state.colors.secondaryColor,

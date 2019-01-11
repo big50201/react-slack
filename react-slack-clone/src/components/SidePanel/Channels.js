@@ -3,7 +3,7 @@ import {Menu,Icon,Modal,Form,Input,Button,Label} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {setCurrentChannel,setPrivateChannel} from '../../actions';
 import firebase from 'firebase';
-import shallowEqual from 'shallowequal';
+import _ from 'lodash';
 class Channels extends Component {
     state = {
         channels:[],
@@ -207,6 +207,12 @@ class Channels extends Component {
                 this.setState({channels});
             });
         }
+         if(_.isEqual(this.state.channels,this.props.allChannels) && !_.isEqual(this.state.channels,nextProps.allChannels)){
+            this.state.channelRef.on('child_added',snap=>{
+                channels.push(snap.val());
+                this.setState({channels});
+            });
+         }
     }
     
 

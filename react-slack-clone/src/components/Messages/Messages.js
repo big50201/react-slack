@@ -294,9 +294,11 @@ class Messages extends Component {
 
     componentWillReceiveProps(nextProps){
         if(nextProps.updatedChannel !== null && 
-            nextProps.updatedChannel !== nextProps.currentChannel){
+            nextProps.updatedChannel.id === nextProps.currentChannel.id &&
+            nextProps.updatedChannel.name !== nextProps.currentChannel.name){
             this.setState({channel:nextProps.updatedChannel});
         }
+
     }
 
     render() {
