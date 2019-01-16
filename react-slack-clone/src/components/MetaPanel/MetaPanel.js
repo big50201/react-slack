@@ -183,7 +183,10 @@ class MetaPanel extends Component {
             nextProps.updatedChannel &&
             nextProps.currentChannel.id === nextProps.updatedChannel.id &&  
             !_.isEqual(this.props.updatedChannel,nextProps.updatedChannel)){
-            this.setState({channel:nextProps.updatedChannel});
+            this.setState({channel:nextProps.updatedChannel,
+                channelName:nextProps.updatedChannel.name,
+                channelDetails:nextProps.updatedChannel.details,
+            });
         }
 
     }
