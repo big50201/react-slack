@@ -3,13 +3,14 @@ import {connect} from 'react-redux';
 import {setCurrentChannel,setPrivateChannel} from '../../actions';
 import {Menu,Icon} from 'semantic-ui-react';
 import firebase from '../../firebase';
+import _ from 'lodash';
 
 class Starred extends Component {
     state = {
         user:this.props.currentUser,
         usersRef:firebase.database().ref('users'),
         // activeChannel:'',
-        starredChannels:[],
+        starredChannels:this.props.starreds,
     }
 
     displayChannels = (starredChannels)=>
@@ -77,36 +78,8 @@ class Starred extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.updatedChannel !== null && !this.props.isPrivateChannel){
-            let starredChannel = {
-                    [nextProps.updatedChannel.id]:{
-                    name:nextProps.updatedChannel.name,
-                    details:nextProps.updatedChannel.details,
-                    createBy:{
-                        name:nextProps.updatedChannel.createBy.name,
-                        avatar:nextProps.updatedChannel.createBy.avatar
-                    }
-                }
-            }
-            if(nextProps.updatedChannel.id === this.props.currentChannel.id){
-                this.state.usersRef
-                .child(`${this.state.user.uid}/starred`)
-                .update(starredChannel)
-                .then(()=>{
-                    this.state.usersRef
-                    .child(this.state.user.uid)
-                    .child('starred')
-                    .on("child_added",snap=>{
-                        const starredChannel = {id:snap.key,...snap.val()};
-                        const filteredChannels = this.state.starredChannels.filter(channel=>{
-                            return channel.id !==starredChannel.id;
-                        });
-                        this.setState({starredChannels:[...filteredChannels,starredChannel]});
-                    })
-
-                    
-                });
-            } 
+        if(this.props.starreds.length>0 && !_.isEqual(this.props.starreds,nextProps.starreds)){
+            this.setState({starredChannels:nextProps.starreds});
         }
     }
 

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button, LabelDetail} from 'semantic-ui-react';
 import firebase from '../../firebase';
 import {connect} from 'react-redux';
-import {updatedCurrentChannel} from '../../actions'; 
+import {updatedCurrentChannel,getAllChannels,getAllStarredChannels} from '../../actions';
+import _ from 'lodash';
 class MetaPanel extends Component {
     state = {
         activeIndex:0,
@@ -15,7 +16,9 @@ class MetaPanel extends Component {
         channelName:this.props.currentChannel && this.props.currentChannel.name,
         channelDetails:this.props.currentChannel && this.props.currentChannel.details,
         updatedChannel:this.props.updatedChannel,
-        createAvatar:''
+        createAvatar:'',
+        isUpdatedChannel:false,
+        isUpdatedStarredChannel:false
     }
 
     setActiveIndex = (e,titileProps)=>{
@@ -116,15 +119,37 @@ class MetaPanel extends Component {
             console.log(err);
             this.setState({errors:this.state.errors.concat(err)});
         })
-
     }
+
+    getAllChannels = (isUpdatedChannel)=>{
+        let channels=[];
+        if(isUpdatedChannel){
+            this.state.channelRef.on('child_added',snap=>{
+                channels.push(snap.val());
+            });
+            this.props.getAllChannels(channels);
+        }
+    }
+
+    getAllStarredChannels=(isUpdatedStarredChannel)=>{
+        let starreds = [];
+        if(isUpdatedStarredChannel){
+            this.state.usersRef.child(`${this.props.currentUser.uid}/starred`).on("child_added",snap=>{
+                starreds.push({id:snap.key,...snap.val()});
+            });
+            this.props.getAllStarredChannels(starreds);
+        }
+    }
+
     removeListeners = ()=>{
         this.state.channelRef.off();
     }
 
     componentDidMount(){
+        this._isMounted = true
         let avatar = '';
         const {privateChannel,channel} = this.state;
+        //大頭貼
         this.state.usersRef.on('child_added',snap=>
         {
             if(!privateChannel && channel && (snap.val().name === channel.createBy.name)){
@@ -132,14 +157,36 @@ class MetaPanel extends Component {
                 this.setState({createAvatar:avatar})
             }
         });
+        //若有變更則會抓取頻道
+        this.state.channelRef.on('value',snap=>{
+            this.setState({isUpdatedChannel:true},()=>this.getAllChannels(this.state.isUpdatedChannel));
+        });
+        //若有變更且user有將此頻道加入我的最愛
+        this.state.usersRef.child(`${this.props.currentUser.uid}/starred`).on('value',snap=>{
+                this._isMounted && this.setState({isUpdatedStarredChannel:true},()=>this.getAllStarredChannels(this.state.isUpdatedStarredChannel));
+            });
+        //若此使用者現在正在使用此頻道
+        if(this.props.currentChannel){
+            this.state.channelRef.child(this.props.currentChannel.id).on("value",snap=>{
+                    this.props.updatedCurrentChannel(snap.val());
+            });
+        }
     }
 
     componentWillUnmount(){
+        this._isMounted = false
         this.removeListeners();
     }
 
+    componentWillReceiveProps(nextProps){
+        if(this.props.currentChannel &&
+            nextProps.updatedChannel &&
+            nextProps.currentChannel.id === nextProps.updatedChannel.id &&  
+            !_.isEqual(this.props.updatedChannel,nextProps.updatedChannel)){
+            this.setState({channel:nextProps.updatedChannel});
+        }
 
-      
+    }
 
     render() {
         const {activeIndex,privateChannel,channel,modal,channelName,channelDetails} = this.state;
@@ -235,4 +282,4 @@ class MetaPanel extends Component {
     }
 }
 
-export default connect(null,{updatedCurrentChannel})(MetaPanel);
+export default connect(null,{updatedCurrentChannel,getAllChannels,getAllStarredChannels})(MetaPanel);

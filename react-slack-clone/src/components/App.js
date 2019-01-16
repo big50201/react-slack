@@ -29,24 +29,9 @@ class App extends Component {
   updateWindowDimensions = ()=>{
     this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
-    
-  componentWillReceiveProps(nextProps){
-    if(nextProps.updatedChannel === null){
-      let allChannels=[];
-      //channels
-      firebase.database().ref('channels').on('value',snap=>{
-         allChannels=[];
-         firebase.database().ref('channels').on('child_added',channel=>{
-            allChannels.push(channel.val());
-            this.setState({allChannels});
-         });
-      });
-    }
-  }
 
   render() {
-    const {allChannels} = this.state;
-    const {currentUser,currentChannel,isPrivateChannel,updatedChannel,userPosts,primaryColor,secondaryColor} = this.props;
+    const {currentUser,currentChannel,isPrivateChannel,updatedChannel,allChannels,starreds,userPosts,primaryColor,secondaryColor} = this.props;
     return (
       <Grid columns="equal" className="app" style={{backgroundColor:secondaryColor,width:this.state.width,height:this.state.height}}>
         <ColorPanel 
@@ -60,6 +45,7 @@ class App extends Component {
           updatedChannel={updatedChannel}  
           isPrivateChannel={isPrivateChannel}
           allChannels={allChannels}
+          starreds={starreds}
         />
         <Grid.Column style={{marginLeft:320}}>
           <Messages 
@@ -76,6 +62,7 @@ class App extends Component {
             isPrivateChannel={isPrivateChannel}
             userPosts={userPosts}
             updatedChannel={updatedChannel}
+            currentUser={currentUser}
           />
         </Grid.Column>
       </Grid>
@@ -90,6 +77,7 @@ const mapStateToProps = state=>{
     isPrivateChannel:state.channel.isPrivateChannel,
     updatedChannel:state.channel.updatedChannel,
     allChannels:state.channel.allChannels,
+    starreds:state.channel.starreds,
     userPosts:state.channel.userPosts,
     primaryColor:state.colors.primaryColor,
     secondaryColor:state.colors.secondaryColor,
