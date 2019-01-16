@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {setUserPosts} from '../../actions';
 import Typing from './Typing';
 import Skeleton from './Skeleton';
+import _ from 'lodash';
 
 class Messages extends Component {
     state = {
@@ -293,8 +294,9 @@ class Messages extends Component {
     }
 
     componentWillReceiveProps(nextProps){
-        if(nextProps.updatedChannel !== null && 
-            nextProps.updatedChannel !== nextProps.currentChannel){
+        if(!this.props.isPrivateChannel &&
+           this.props.currentChannel && this.props.updatedChannel &&
+           this.props.currentChannel.id === nextProps.updatedChannel.id){
             this.setState({channel:nextProps.updatedChannel});
         }
     }

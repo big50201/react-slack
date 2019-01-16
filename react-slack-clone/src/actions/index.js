@@ -1,5 +1,5 @@
 import * as actionTypes from './types';
-import firebase from '../firebase';
+
 export const setUser = user=>{
     return {
         type:actionTypes.SET_USER,
@@ -59,4 +59,22 @@ export const updatedCurrentChannel = (channel) =>{
                 updatedChannel:channel
             }
         }
-  }
+}
+
+export const getAllChannels = (channels)=>{
+    return {
+        type:actionTypes.GET_ALL_CHANNELS,
+        payload:{
+            allChannels:channels
+        }
+    }
+}
+
+export const getAllStarredChannels = (starreds)=>{
+    return {
+        type:actionTypes.GET_ALL_STARRED_CHANNELS,
+        payload:{
+            starreds
+        }
+    }
+}

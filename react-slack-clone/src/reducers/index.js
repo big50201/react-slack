@@ -26,7 +26,9 @@ const initChannelState = {
     currentChannel:null,
     isPrivateChannel:false,
     userPosts:null,
-    updatedChannel:null
+    updatedChannel:null,
+    allChannels:[],
+    starreds:[]
 }
 const channel_reducers = (state=initChannelState,action)=>{
     switch (action.type) {
@@ -49,6 +51,16 @@ const channel_reducers = (state=initChannelState,action)=>{
             return {
                 ...state,
                 updatedChannel:action.payload.updatedChannel
+            }
+        case actionTypes.GET_ALL_CHANNELS:
+            return {
+                ...state,
+                allChannels:action.payload.allChannels
+            }
+        case actionTypes.GET_ALL_STARRED_CHANNELS:
+            return {
+                ...state,
+                starreds:action.payload.starreds
             }
         default:
             return state;

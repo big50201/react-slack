@@ -3,10 +3,10 @@ import {Menu,Icon,Modal,Form,Input,Button,Label} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import {setCurrentChannel,setPrivateChannel} from '../../actions';
 import firebase from 'firebase';
-import shallowEqual from 'shallowequal';
+import _ from 'lodash';
 class Channels extends Component {
     state = {
-        channels:[],
+        channels:this.props.allChannels,
         channelName:'',
         channelDetails:'',
         channelRef :firebase.database().ref('channels'),
@@ -70,11 +70,11 @@ class Channels extends Component {
     }
     addListeners = ()=>{
         let loadChannels=[];
-        this.state.channelRef.on("child_added",snap=>{
-            loadChannels.push(snap.val());
-            this.setState({channels:loadChannels},()=>this.setFirstChannel());
-            this.addNotificationsListener(snap.key);
-        });
+            this.state.channelRef.on("child_added",snap=>{
+                loadChannels.push(snap.val());
+                this.setState({channels:loadChannels},()=>this.setFirstChannel());
+                this.addNotificationsListener(snap.key);
+            });
     }
 
     addNotificationsListener = channelID=>{
@@ -201,11 +201,8 @@ class Channels extends Component {
 
     componentWillReceiveProps(nextProps){
         let channels = [];
-        if(nextProps.updatedChannel !== null){
-            this.state.channelRef.on('child_added',snap=>{
-                channels.push(snap.val());
-                this.setState({channels});
-            });
+        if(this.props.allChannels.length>0 && !_.isEqual(this.props.allChannels,nextProps.allChannels)){
+           this.setState({channels:nextProps.allChannels});
         }
     }
     
