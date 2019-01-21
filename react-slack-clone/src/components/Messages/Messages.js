@@ -274,11 +274,14 @@ class Messages extends Component {
     }
     
     componentDidMount(){
-        const {channel,user,listeners} = this.state;
-        if(channel && user){
-            this.removeListener(listeners);
-            this.addListener(channel.id);
-            this.addUserStarListener(channel.id,user.uid);
+        this._isMounted = true;
+        if(this._isMounted){
+            const {channel,user,listeners} = this.state;
+            if(channel && user){
+                this.removeListener(listeners);
+                this.addListener(channel.id);
+                this.addUserStarListener(channel.id,user.uid);
+            }
         }
     }
 
@@ -289,6 +292,7 @@ class Messages extends Component {
     }
 
     componentWillUnmount(){
+        this._isMounted = false;
         this.removeListener(this.state.listeners);
         this.state.connectedRef.off();
     }
