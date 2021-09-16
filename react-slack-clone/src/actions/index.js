@@ -51,3 +51,30 @@ export const setColors = (primaryColor,secondaryColor)=>{
         }
     }
 }
+
+export const updatedCurrentChannel = (channel) =>{
+    return {
+        type:actionTypes.UPDATED_CURRENT_CHANNEL,
+        payload:{
+                updatedChannel:channel
+            }
+        }
+}
+
+export const getAllChannels = (channels)=>{
+    return {
+        type:actionTypes.GET_ALL_CHANNELS,
+        payload:{
+            allChannels:channels
+        }
+    }
+}
+
+export const getAllStarredChannels = (starreds)=>{
+    return {
+        type:actionTypes.GET_ALL_STARRED_CHANNELS,
+        payload:{
+            starreds
+        }
+    }
+}

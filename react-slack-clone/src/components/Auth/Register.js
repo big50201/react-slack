@@ -152,7 +152,7 @@ class Register extends Component {
                           
                         </Segment>
                     </Form>
-                    {this.state.errors.length>0 && (
+                    {this.state.errors.length > 0 && (
                         <Message error>
                             <h3>Error</h3>
                             {this.displayErrors(errors)}

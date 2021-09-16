@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {setUserPosts} from '../../actions';
 import Typing from './Typing';
 import Skeleton from './Skeleton';
+import _ from 'lodash';
 
 class Messages extends Component {
     state = {
@@ -66,7 +67,7 @@ class Messages extends Component {
         this.state.typeRef
         .child(channelID)
         .on("child_added",snap=>{
-            if(snap.key !== this.state.user.uid){
+            if(snap.key !== this.state.user.uid ){
                 typingUsers = typingUsers.concat({
                     id:snap.key,
                     name:snap.val()
@@ -82,7 +83,7 @@ class Messages extends Component {
         .on("child_removed",snap=>{
             const index = typingUsers.findIndex(user=>user.id === snap.key)
             if(index !== -1){
-                typingUsers = typingUsers.fill(user=>user.id !== snap.key);
+                typingUsers = typingUsers.filter(user=>user.id !== snap.key);
                 this.setState({typingUsers})
             }
         })   
@@ -116,10 +117,13 @@ class Messages extends Component {
 
     displayMessage = messages=>{
         return (messages.length>0 && messages.map(message=>{
+            let avatar = '';
+            this.state.userRef.child(message.user.id).on('value',snap=>(avatar = snap.val().avatar));
             return (
             <Message
                 key={message.timestamp}
                 message={message}
+                avatar = {avatar}
                 user={this.state.user}
             />)
         }))
@@ -155,8 +159,10 @@ class Messages extends Component {
                 acc[message.user.name].count +=1;
                 
             }else{
+                let avatar = '';
+                this.state.userRef.child(message.user.id).on('value',snap=>(avatar = snap.val().avatar));
                 acc[message.user.name] = {
-                    avatar:message.user.avatar,
+                    avatar:avatar,
                     count:1
                 }
             }
@@ -268,11 +274,14 @@ class Messages extends Component {
     }
     
     componentDidMount(){
-        const {channel,user,listeners} = this.state;
-        if(channel && user){
-            this.removeListener(listeners);
-            this.addListener(channel.id);
-            this.addUserStarListener(channel.id,user.uid);
+        this._isMounted = true;
+        if(this._isMounted){
+            const {channel,user,listeners} = this.state;
+            if(channel && user){
+                this.removeListener(listeners);
+                this.addListener(channel.id);
+                this.addUserStarListener(channel.id,user.uid);
+            }
         }
     }
 
@@ -283,8 +292,18 @@ class Messages extends Component {
     }
 
     componentWillUnmount(){
+        this._isMounted = false;
         this.removeListener(this.state.listeners);
         this.state.connectedRef.off();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(!this.props.isPrivateChannel &&
+           this.props.currentChannel && this.props.updatedChannel &&
+           this.props.currentChannel.id === nextProps.updatedChannel.id){
+            this.setState({channel:nextProps.updatedChannel});
+        }
+
     }
 
     render() {
@@ -313,8 +332,8 @@ class Messages extends Component {
                     handleStar={this.handleStar}
                     isChannelStarred={isChannelStarred}
                 />
-                <Segment>
-                    <Comment.Group className={"messages"}>
+                <Segment className={"messages"}>
+                    <Comment.Group>
                         {this.displayMessageSkeleton(messageLoading)}
                         {searchTerm ? 
                             this.displayMessage(searchResults):

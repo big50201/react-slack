@@ -3,13 +3,14 @@ import {connect} from 'react-redux';
 import {setCurrentChannel,setPrivateChannel} from '../../actions';
 import {Menu,Icon} from 'semantic-ui-react';
 import firebase from '../../firebase';
+import _ from 'lodash';
 
 class Starred extends Component {
     state = {
         user:this.props.currentUser,
         usersRef:firebase.database().ref('users'),
         // activeChannel:'',
-        starredChannels:[]
+        starredChannels:this.props.starreds,
     }
 
     displayChannels = (starredChannels)=>
@@ -21,7 +22,7 @@ class Starred extends Component {
                     onClick={()=>this.changeChannels(channel)}
                     name={channel.name}
                     style={{opacity:0.7}}
-                    active={channel.id === this.props.currentChannel.id}
+                    active={(channel && channel.id) === (this.props.currentChannel && this.props.currentChannel.id)}
                 >
                 ＃{channel.name}
                 </Menu.Item>)
@@ -75,6 +76,14 @@ class Starred extends Component {
     componentWillUnmount(){
         this.removeListeners();
     }
+
+    componentWillReceiveProps(nextProps){
+        if(this.props.starreds.length>0 && !_.isEqual(this.props.starreds,nextProps.starreds)){
+            this.setState({starredChannels:nextProps.starreds});
+        }
+    }
+
+    
     render() {
         const {starredChannels} = this.state;
         return (
