@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button, LabelDetail} from 'semantic-ui-react';
+import {Segment,Accordion,Header,Icon,Image,List,Modal,Form,Input,Button} from 'semantic-ui-react';
 import firebase from '../../firebase';
 import {connect} from 'react-redux';
 import {updatedCurrentChannel,getAllChannels,getAllStarredChannels} from '../../actions';
@@ -44,7 +44,7 @@ class MetaPanel extends Component {
         .slice(0,5));
     }
 
-    formatCount = count=> count >1 || count == 0 ? `${count} posts`:`${count} post`;
+    formatCount = count=> count >1 || count === 0 ? `${count} posts`:`${count} post`;
 
     openModal = ()=>this.setState({modal:true});    
     closeModal = ()=>this.setState({modal:false});

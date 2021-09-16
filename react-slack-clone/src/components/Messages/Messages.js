@@ -8,7 +8,6 @@ import {connect} from 'react-redux';
 import {setUserPosts} from '../../actions';
 import Typing from './Typing';
 import Skeleton from './Skeleton';
-import _ from 'lodash';
 
 class Messages extends Component {
     state = {
@@ -183,8 +182,8 @@ class Messages extends Component {
         const reg = new RegExp(this.state.searchTerm,'gi');
         const searchResults = channelMessages.reduce((acc,message)=>{
             if(message.content && 
-               message.content.match(reg) || 
-               message.user.name.match(reg)){
+               (message.content.match(reg) || 
+               message.user.name.match(reg))){
                 acc.push(message);
             }
 

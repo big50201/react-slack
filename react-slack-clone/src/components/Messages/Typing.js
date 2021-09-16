@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 const Typing =()=>(
             <div className="typing">
                 <div className="typing__dot"></div>

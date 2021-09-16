@@ -6,7 +6,7 @@ import SidePanel from './SidePanel/SidePanel';
 import Messages from './Messages/Messages';
 import MetaPanel from './MetaPanel/MetaPanel';
 import {connect} from 'react-redux';
-import firebase from '../firebase';
+
 class App extends Component {
   constructor(props) {
     super(props);
